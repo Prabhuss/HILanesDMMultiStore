@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:template="clr-namespace:PyConsumerApp.Views.Stores"
+             xmlns:controls="clr-namespace:PyConsumerApp.Controls"
+             xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+             xmlns:listView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             mc:Ignorable="d"
+            x:Name="StorePage"
+            Title="Home"
+             x:Class="PyConsumerApp.Views.Stores.StoreListPage"
+             BackgroundColor="White"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </ContentPage.Resources>
+    <!--  Title View  -->
+    <!--controls:TitleView Title="Categories" Grid.Row="0"-->
+    
+
+    <ContentPage.Content>
+        <StackLayout Spacing="0" BackgroundColor="{DynamicResource Gray-100}">
+            <controls:TitleView Title="Select Store" Grid.Row="0">
+            </controls:TitleView>
+            <StackLayout Spacing="0"
+                   Margin="20,25,20,3">
+                <Label Text="Welcome!"   TextColor="Black"
+                           FontSize="Small"
+                           FontFamily="{DynamicResource Montserrat-Medium}"
+                VerticalOptions="Start" 
+                HorizontalOptions="Start" />
+                <Label Text="Please select nearest Store to continue."  TextColor="Black"
+                           FontSize="Small"
+                           FontFamily="{DynamicResource Montserrat-Medium}"
+                VerticalOptions="Start" 
+                HorizontalOptions="Start" />
+                
+                <BoxView
+                            HeightRequest="2"
+                BackgroundColor="White"/>
+            </StackLayout>
+            <Grid >
+                <!--  My Order list  -->
+                <RefreshView IsRefreshing="{Binding IsLoading, Mode=TwoWay}"
+                    RefreshColor="{DynamicResource PrimaryColor}"
+                    Command="{Binding LoadCategoryItemsCommand}">
+                    <listView:SfListView x:Name="storeList"  AutoFitMode="DynamicHeight" BackgroundColor="{DynamicResource Gray-100}" SelectionMode="None" ItemsSource="{Binding StoreList}" VerticalOptions="Start">
+                        <listView:SfListView.HeaderTemplate>
+                            <DataTemplate>
+                                <Label Text="Pull down to reload list." TextColor="Black"
+                                    FontSize="Micro"
+                                    FontFamily="{DynamicResource Montserrat-Medium}"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Center" />
+                            </DataTemplate>
+                        </listView:SfListView.HeaderTemplate>
+                        <listView:SfListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.StoreItemTappedCommand, Source={x:Reference storeList}}" CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
+                                    <Frame
+        Margin="15,5"
+        Padding="5"
+        BackgroundColor="{DynamicResource Gray-White}">
+
+                                        <Grid
+        ColumnSpacing="0"
+        RowSpacing="0">
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!--  Product image  -->
+                                            <Frame
+                        Grid.Column="0"
+                        Margin="8"
+                        HeightRequest="80"
+                        WidthRequest="80"
+                Padding="0"
+                CornerRadius="50">
+                                                <Image
+                        Aspect="AspectFit"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                        Source="{Binding LogoLink}">
+                                                </Image>
+                                            </Frame>
+
+                                            <StackLayout
+                        Grid.Column="1"
+                        Margin="0,8,0,0"
+                        Padding="0"
+                        HorizontalOptions="FillAndExpand"
+                        Orientation="Vertical"
+                        Spacing="2"
+                        VerticalOptions="FillAndExpand">
+
+                                                <!--  Store Name  -->
+                                                <Label
+                            Margin="0"
+                            FontFamily="{StaticResource Montserrat-Medium}"
+                            FontSize="16"
+                            MaxLines="2"
+                            FontAttributes="Bold"
+                            Text="{Binding ShopName}"
+                            VerticalOptions="Center"
+                            TextColor="#b51700"/>
+                                                <BoxView
+                            HeightRequest="1"
+                BackgroundColor="{DynamicResource Gray-100}"/>
+
+                                                <!--  Store Address  -->
+                                                <Label
+                            Margin="0"
+                            FontFamily="{StaticResource Montserrat-Medium}"
+                            FontSize="12"
+                            MaxLines="3"
+                            Text="{Binding MerchantAddress, StringFormat='Address: {0}'}"
+                            VerticalOptions="Center" />
+
+                                                <!--  Store Pincode -->
+                                                <Label
+                            Margin="0"
+                            FontFamily="{StaticResource Montserrat-Medium}"
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            Text="{Binding MerchantPinCode, StringFormat='Pin Code: {0}'}"
+                            VerticalOptions="Center" />
+
+                                            </StackLayout>
+
+                                        </Grid>
+                                    </Frame>
+                                </Grid>
+                            </DataTemplate>
+                        </listView:SfListView.ItemTemplate>
+                    </listView:SfListView>
+                </RefreshView>
+                <ActivityIndicator IsRunning="{Binding IsClicked}" IsVisible="{Binding IsClicked}" VerticalOptions="Center" HorizontalOptions="Center" Color="#b51700" />
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,325 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="PyConsumerApp.Views.Bookmarks.CartPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+    xmlns:catalogBehavior="clr-namespace:PyConsumerApp.Behaviors.Catalog"
+    xmlns:controls="clr-namespace:PyConsumerApp.Controls"
+    xmlns:local="clr-namespace:PyConsumerApp.Views.Bookmarks"
+    
+    xmlns:numeric="clr-namespace:Syncfusion.SfNumericUpDown.XForms;assembly=Syncfusion.SfNumericUpDown.XForms" 
+    xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+    xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+    xmlns:behaviors="clr-namespace:PyConsumerApp.Behaviors"
+    xmlns:helper="clr-namespace:PyConsumerApp.Helpers"
+    xmlns:template="clr-namespace:PyConsumerApp.Views.Templates" 
+    xmlns:emptyView="clr-namespace:PyConsumerApp.Views.ErrorAndEmpty" 
+    xmlns:converter="clr-namespace:PyConsumerApp.Converters"
+    x:Name="cartPage"
+    Title="Cart"
+    BackgroundColor="{DynamicResource Gray-100}"
+    NavigationPage.HasNavigationBar="False">
+    <ContentPage.Behaviors>
+        <catalogBehavior:CartBehavior/>
+    </ContentPage.Behaviors>
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        <converter:VisibilityConverter x:Key="visibilityConverter" />
+    </ContentPage.Resources>
+
+    <!--ContentPage.ControlTemplate>
+        <ControlTemplate>
+            <StackLayout Spacing="0">
+
+                <controls:TitleView Title="Cart" BackgroundColor="{DynamicResource Gray-White}">
+                    <controls:TitleView.LeadingView>
+                        <buttons:SfButton
+                            x:Name="backButton"
+                            Command="{TemplateBinding BindingContext.BackButtonCommand}"
+                            CommandParameter="{x:Reference backButton}"
+                            CornerRadius="4"
+                            Style="{StaticResource IconButtonStyle}"
+                            Text="{StaticResource Back}" />
+                    </controls:TitleView.LeadingView>
+                </controls:TitleView>
+
+                <ContentPresenter />
+
+            </StackLayout>
+        </ControlTemplate>
+    </ContentPage.ControlTemplate-->
+
+    <ContentPage.Content>
+        <Grid>
+
+            <emptyView:EmptyView Grid.Row="0" IsVisible="{Binding IsEmptyViewVisible}">
+            <x:Arguments>
+                <x:Boolean>true</x:Boolean>
+                <x:String>CART IS EMPTY</x:String>
+                <x:String>You don't have any item in your cart</x:String>
+                <x:String>EmptyCart.svg</x:String>
+            </x:Arguments>
+        </emptyView:EmptyView>
+
+        <StackLayout BackgroundColor="White"
+                         Grid.Row="0"
+                         IsVisible="{Binding IsEmptyViewVisible, Converter={StaticResource visibilityConverter}}">
+
+            <StackLayout Spacing="0">
+                <controls:TitleView Title="Cart" BackgroundColor="{DynamicResource Gray-White}">
+                    <controls:TitleView.LeadingView>
+                            <buttons:SfButton
+                            x:Name="backButton"
+                            Command="{Binding Path=BindingContext.BackButtonCommand, Source={x:Reference cartPage}}"
+                            CommandParameter="{x:Reference backButton}"
+                            CornerRadius="4"
+                            Style="{StaticResource IconButtonStyle}"
+                            Text="{StaticResource Back}" />
+                        </controls:TitleView.LeadingView>
+                        <!--controls:TitleView.TrailingView>
+                            <ActivityIndicator  IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" Color="#b51700" />
+                        </controls:TitleView.TrailingView-->
+                    </controls:TitleView>
+                <ContentPresenter />
+            </StackLayout>
+
+            <ScrollView VerticalScrollBarVisibility="Never">
+
+            <!--  Cart Details  -->
+            <Grid
+                Margin="{OnIdiom Default='0,16,0,0',
+                                 Desktop='16'}"
+                BackgroundColor="{OnIdiom Default={StaticResource Transparent},
+                                          Desktop={DynamicResource Gray-White},
+                                          Converter={StaticResource DynamicResourceToColorConverter}}"
+                ColumnSpacing="0"
+                HorizontalOptions="{OnIdiom Default=Fill,
+                                            Desktop=FillAndExpand}"
+                RowSpacing="0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="{OnIdiom Default=Auto, Phone=0}" />
+                    <RowDefinition Height="{OnIdiom Default=Auto, Phone=0}" />
+                    <RowDefinition Height="{OnIdiom Default=Auto, Desktop=*}" />
+                    <RowDefinition Height="{OnIdiom Default=*, Desktop=0}" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{OnIdiom Default=*, Desktop=3*}" />
+                    <ColumnDefinition Width="{OnIdiom Default=0, Desktop=Auto}" />
+                    <ColumnDefinition Width="{OnIdiom Default=0, Desktop=1*}" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Cart Header  -->
+                <StackLayout
+                    Padding="16"
+                    BackgroundColor="{DynamicResource Gray-White}"
+                    Orientation="Horizontal">
+                    <Label
+                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                        Style="{StaticResource CommonLabelStyle}"
+                        Text="My Cart"
+                        TextColor="{DynamicResource Gray-900}" />
+
+                            <Label
+                        BackgroundColor="{DynamicResource Gray-White}"
+                        FontAttributes="Bold"
+                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                        HorizontalOptions="EndAndExpand"
+                        HorizontalTextAlignment="End"
+                        Style="{StaticResource CommonLabelStyle}"
+                        Text="{Binding TotalPrice, StringFormat='Total: ₹{0}'}"
+                        TextColor="{DynamicResource Dray-56}" />
+                </StackLayout>
+
+                <BoxView
+                    Grid.Row="1"
+                    HeightRequest="1"
+                    Style="{StaticResource BoxViewStyle}" />
+
+                <!--  Cart items  BindableLayout.ItemsSource="{Binding CartDetails}-->
+                <StackLayout
+                    x:Name="CartLayout"
+                    Grid.Row="2"
+                    BackgroundColor="{OnIdiom Default={StaticResource Transparent},
+                                              Desktop={StaticResource Gray-White},
+                                              Converter={StaticResource DynamicResourceToColorConverter}}"
+                    BindableLayout.ItemsSource="{Binding UserCarts}"
+                    Spacing="5"
+                    VerticalOptions="Start">
+                    
+                    
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                                    <Grid Margin="5"
+                                        BackgroundColor="{DynamicResource Gray-White}"
+                                        ColumnSpacing="0"
+                                        RowSpacing="0">
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                <!--  Product image  -->
+                                <Image
+                                            Grid.Column="0"
+                                            Margin="10,0"
+                                            Aspect="AspectFit"
+                                    HorizontalOptions="Start"
+                                    VerticalOptions="Start"
+                                    BackgroundColor="LightGray"
+                                            HeightRequest="100"
+                                            WidthRequest="100">
+                                    <Image.Source>
+                                        <UriImageSource
+                                                    CacheValidity="14"
+                                                    CachingEnabled="true"
+                                                    Uri="{Binding Product.PreviewImage}" />
+                                    </Image.Source>
+                                </Image>
+                                        <StackLayout Spacing="0" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Start">
+
+                                            <!--  Product name  -->
+                                            <Label
+                                            Grid.Column="1"
+                                            FontFamily="{StaticResource Montserrat-Medium}"
+                                            FontSize="12"
+                                            HorizontalOptions="StartAndExpand"
+                                            LineBreakMode="TailTruncation"
+                                            MaxLines="2"
+                                            Style="{StaticResource CommonLabelStyle}"
+                                            Text="{Binding Product.productName}"
+                                            TextColor="{DynamicResource Gray-900}" />
+
+                                            <StackLayout
+                                            Grid.Column="1"
+                                            Margin="0"
+                                            Padding="0"
+                                            Orientation="Horizontal"
+                                            Spacing="4">
+
+                                                <!--  Product price  -->
+                                                <Label
+                                                FontFamily="{StaticResource Montserrat-SemiBold}"
+                                                FontSize="16"
+                                                HorizontalOptions="Start"
+                                                Style="{StaticResource CommonLabelStyle}"
+                                                Text="{Binding Product.DiscountPrice, StringFormat='₹{0:0 }'}"
+                                                TextColor="{DynamicResource PrimaryColor}" />
+
+                                                <Label
+                                                FontFamily="{DynamicResource Montserrat-Medium}"
+                                                FontSize="12"
+                                                HorizontalOptions="Start"
+                                                Style="{StaticResource CommonLabelStyle}"
+                                                IsVisible="{Binding Product.AnyDiscount}"
+                                                Text="{Binding Product.mrp, StringFormat='₹{0:0.00}'}"
+                                                TextDecorations="Strikethrough"
+                                                VerticalTextAlignment="Center" />
+                                            </StackLayout>
+
+                                            <!--  Product quantity dropdown  -->
+                                            <numeric:SfNumericUpDown 
+                                                    HorizontalOptions="Start"
+                                                    VerticalOptions="Center"
+                                                Margin="-10,-3"
+                                                    x:Name="numericUpDown" 
+                                                    SpinButtonAlignment="Both" 
+                                                    HeightRequest="50" WidthRequest="128"
+                                                    FormatString="n"
+                                                    Value="{Binding Product.TotalQuantity}"
+                                                    Maximum="999"
+                                                    Minimum="1"
+                                                    ValueChanged="numericUpDown_ValueChanged"
+                                                    BorderColor="White"
+                                                    StepValue="1"
+                                                    TextAlignment="Center"
+                                                    MaximumDecimalDigits="0"
+                                                    />
+
+                                            <!--  Remove button  -->
+                                            <buttons:SfButton
+                                                Command="{Binding Path=BindingContext.RemoveCommand, Source={x:Reference CartLayout}}"
+                                                CommandParameter="{Binding .}"
+                                                CornerRadius="4"
+                                                Padding="0"
+                                                Margin="0,-3"
+                                                HorizontalOptions="Start"
+                                                WidthRequest="80"
+                                                Style="{StaticResource SfButtonStyle}"
+                                                VerticalOptions="Center" >
+                                                <buttons:SfButton.Content>
+                                                    <Label
+                                                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                                                        FontSize="14"
+                                                        HorizontalOptions="Start"
+                                                        HorizontalTextAlignment="Start"
+                                                        Style="{StaticResource CommonLabelStyle}"
+                                                        Text="Remove"
+                                                        TextColor="{DynamicResource HyperLink}" />
+                                                </buttons:SfButton.Content>
+                                            </buttons:SfButton>
+                                        </StackLayout>
+                                        <BoxView
+                                            Grid.Row="1"
+                                            Grid.ColumnSpan="2"
+                                            HeightRequest="1"
+                                            Margin="10,7,10,0"
+                                            BackgroundColor="LightGray"
+                                        />
+                                    </Grid>
+                            <!--template:CartItemListTemplate
+                                x:Name="template"
+                                ChildElement="{Binding Source={x:Reference template}}"
+                                ParentBindingContext="{Binding Path=BindingContext, Source={x:Reference cartPage}}"
+                                ParentElement="{Binding Source={x:Reference CartLayout}}" /-->
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+
+                <!--  Separator  -->
+                <BoxView
+                    Grid.Row="0"  
+                    Grid.RowSpan="4"
+                    Grid.Column="1"
+                    Style="{StaticResource BoxViewStyle}"
+                    VerticalOptions="Fill"
+                    WidthRequest="{OnIdiom Default=0,
+                                           Desktop=16}"
+                    Color="{DynamicResource Gray-100}" />
+                        <!--  Price Details  -->
+                <local:PriceDetailView
+                    Grid.Row="{OnIdiom Default=3,
+                                       Desktop=0}"
+                    Grid.RowSpan="{OnIdiom Default=1,
+                                           Desktop=4}"
+                    Grid.Column="{OnIdiom Default=0,
+                                          Desktop=2}"
+                    Grid.ColumnSpan="{OnIdiom Default=3,
+                                              Desktop=1}"
+                    Margin="{OnIdiom Default='0,16,0,0',
+                                     Desktop=0}"
+                    ActionText="PROCEED"
+                    BackgroundColor="{DynamicResource Gray-100}"
+                    HorizontalOptions="{OnIdiom Default=Fill,
+                                                Desktop=End}" />
+                 <ActivityIndicator Grid.Row="{OnIdiom Default=3, Desktop=0}" x:Name="activityIndicator" IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" Color="#b51700" />
+
+             </Grid>
+        </ScrollView>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+    
+</ContentPage>
